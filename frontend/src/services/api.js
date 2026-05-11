@@ -36,6 +36,7 @@ export const getCompetitions = () => API.get('/competitions');
 export const createCompetition = (data) => API.post('/competitions', data);
 export const getCompetition = (id) => API.get(`/competitions/${id}`);
 export const toggleCompetition = (id) => API.put(`/competitions/${id}/toggle`);
+export const joinCompetition = (id) => API.put(`/competitions/${id}/join`);
 
 // Logs
 export const getLogs = (params) => API.get('/logs', { params });

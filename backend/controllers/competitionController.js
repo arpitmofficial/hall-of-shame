@@ -57,4 +57,28 @@ const toggleCompetition = async (req, res) => {
   }
 };
 
-module.exports = { getCompetitions, getCompetition, createCompetition, toggleCompetition };
+// @desc  Join a competition
+// @route PUT /api/competitions/:id/join
+const joinCompetition = async (req, res) => {
+  try {
+    const competition = await Competition.findById(req.params.id);
+    if (!competition) return res.status(404).json({ success: false, error: 'Competition not found' });
+    
+    if (competition.participants.includes(req.user._id)) {
+      return res.status(400).json({ success: false, error: 'Already a participant' });
+    }
+    
+    competition.participants.push(req.user._id);
+    await competition.save();
+    
+    const updated = await Competition.findById(req.params.id)
+      .populate('participants', 'name avatar')
+      .populate('createdBy', 'name');
+      
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+module.exports = { getCompetitions, getCompetition, createCompetition, toggleCompetition, joinCompetition };

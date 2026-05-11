@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getCompetitions, createCompetition, toggleCompetition, getScoreboard, getLogs, createLog, getUsers } from '../services/api';
+import { getCompetitions, createCompetition, toggleCompetition, getScoreboard, getLogs, createLog, getUsers, joinCompetition } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 
@@ -29,6 +29,21 @@ export default function Competitions() {
       .finally(() => setLoading(false));
 
   useEffect(() => { load(); }, []);
+
+  const canViewComp = (comp) => user?.role === 'admin' || comp.participants.some(p => p._id === user?._id);
+
+  const handleJoin = async (comp, e) => {
+    e.stopPropagation();
+    try {
+      const res = await joinCompetition(comp._id);
+      const updated = res.data.data;
+      setComps(comps.map(c => c._id === comp._id ? updated : c));
+      toast('Joined competition! 🎉');
+      openComp(updated);
+    } catch (err) {
+      toast(err.response?.data?.error || 'Failed to join', 'error');
+    }
+  };
 
   const openComp = async (comp) => {
     setSelected(comp);
@@ -246,18 +261,28 @@ export default function Competitions() {
         <>
           <div className="section-header" style={{ marginBottom: '0.75rem' }}><span className="section-title">🔥 Active</span></div>
           <div className="grid-2" style={{ marginBottom: '2rem' }}>
-            {comps.filter(c => c.isActive).map((c) => (
-              <div key={c._id} className="comp-card" onClick={() => openComp(c)}>
-                <div className="comp-emoji">{c.emoji}</div>
-                <div className="comp-title">{c.title}</div>
-                {c.description && <div className="comp-desc">{c.description}</div>}
-                <div className="comp-footer">
-                  <span className="comp-sem">{c.semester || 'No semester'}</span>
-                  <span className="comp-active">● Active</span>
+            {comps.filter(c => c.isActive).map((c) => {
+              const canView = canViewComp(c);
+              return (
+                <div key={c._id} className="comp-card" onClick={() => canView && openComp(c)} style={{ cursor: canView ? 'pointer' : 'default' }}>
+                  <div className="comp-emoji">{c.emoji}</div>
+                  <div className="comp-title">{c.title}</div>
+                  {c.description && <div className="comp-desc">{c.description}</div>}
+                  <div className="comp-footer">
+                    <span className="comp-sem">{c.semester || 'No semester'}</span>
+                    <span className="comp-active">● Active</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                    {c.requiresApproval && <span className="pill pill-pending" style={{ fontSize: '0.72rem' }}>Requires Approval</span>}
+                    {!canView && (
+                      <button className="btn btn-primary btn-sm" onClick={(e) => handleJoin(c, e)}>
+                        Join
+                      </button>
+                    )}
+                  </div>
                 </div>
-                {c.requiresApproval && <span className="pill pill-pending" style={{ fontSize: '0.72rem' }}>Requires Approval</span>}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}
@@ -267,17 +292,20 @@ export default function Competitions() {
         <>
           <div className="section-header" style={{ marginBottom: '0.75rem' }}><span className="section-title" style={{ color: 'var(--muted)' }}>🔒 Ended</span></div>
           <div className="grid-2">
-            {comps.filter(c => !c.isActive).map((c) => (
-              <div key={c._id} className="comp-card" style={{ opacity: 0.6 }} onClick={() => openComp(c)}>
-                <div className="comp-emoji">{c.emoji}</div>
-                <div className="comp-title">{c.title}</div>
-                {c.description && <div className="comp-desc">{c.description}</div>}
-                <div className="comp-footer">
-                  <span className="comp-sem">{c.semester || 'No semester'}</span>
-                  <span className="comp-inactive">○ Ended</span>
+            {comps.filter(c => !c.isActive).map((c) => {
+              const canView = canViewComp(c);
+              return (
+                <div key={c._id} className="comp-card" style={{ opacity: 0.6, cursor: canView ? 'pointer' : 'default' }} onClick={() => canView && openComp(c)}>
+                  <div className="comp-emoji">{c.emoji}</div>
+                  <div className="comp-title">{c.title}</div>
+                  {c.description && <div className="comp-desc">{c.description}</div>}
+                  <div className="comp-footer">
+                    <span className="comp-sem">{c.semester || 'No semester'}</span>
+                    <span className="comp-inactive">○ Ended</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}
