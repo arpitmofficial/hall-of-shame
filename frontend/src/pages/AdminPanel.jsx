@@ -318,7 +318,7 @@ export default function AdminPanel() {
                   <div style={{ fontSize: '1.5rem' }}>👮</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600 }}>{u.name} {u._id === user?._id ? <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>(you)</span> : ''}</div>
-                    <div style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{u.email}</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{u.phone}</div>
                   </div>
                   <span className="pill pill-pending">Admin</span>
                 </div>
@@ -329,7 +329,7 @@ export default function AdminPanel() {
                   <div style={{ fontSize: '1.5rem' }}>⚽</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600 }}>{u.name}</div>
-                    <div style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{u.email}</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{u.phone}</div>
                   </div>
                   <span className="pill pill-approved">Player</span>
                 </div>

@@ -7,7 +7,7 @@ export default function Login() {
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'player' });
+  const [form, setForm] = useState({ name: '', phone: '', password: '', role: 'player' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -44,8 +44,16 @@ export default function Login() {
             </div>
           )}
           <div className="form-group">
-            <label className="form-label">Email</label>
-            <input className="form-input" type="email" name="email" value={form.email} onChange={handle} placeholder="you@example.com" required />
+            <label className="form-label">Phone Number</label>
+            <input
+              className="form-input"
+              type="tel"
+              name="phone"
+              value={form.phone}
+              onChange={handle}
+              placeholder="e.g. 9876543210"
+              required
+            />
           </div>
           <div className="form-group">
             <label className="form-label">Password</label>
