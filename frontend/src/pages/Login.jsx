@@ -63,7 +63,7 @@ export default function Login() {
             <div className="form-group">
               <label className="form-label">Role</label>
               <select className="form-select" name="role" value={form.role} onChange={handle}>
-                <option value="bro">Bro (You / Roommate)</option>
+                <option value="bro">Bro</option>
                 <option value="admin">Admin (Council of Bros 👮)</option>
               </select>
             </div>
