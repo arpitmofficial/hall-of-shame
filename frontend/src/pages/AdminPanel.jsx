@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getLogs, reviewLog, getMatches, updateMatch, deleteMatch, getCompetitions, toggleCompetition, getUsers } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 
 const fmt = (d) => new Date(d).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 const fmtD = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -34,6 +35,7 @@ export default function AdminPanel() {
   // Council state
   const [allUsers, setAllUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
+  const [confirmMatchId, setConfirmMatchId] = useState(null); // match id awaiting delete confirm
 
   // Load functions
   const loadLogs = (status) => {
@@ -108,13 +110,14 @@ export default function AdminPanel() {
   };
 
   const delMatch = async (id) => {
-    if (!window.confirm('Permanently delete this match?')) return;
     try {
       await deleteMatch(id);
       setMatches(matches.filter(m => m._id !== id));
       toast('Match deleted');
     } catch {
       toast('Failed to delete', 'error');
+    } finally {
+      setConfirmMatchId(null);
     }
   };
 
@@ -255,7 +258,7 @@ export default function AdminPanel() {
                     <div style={{ fontSize: '0.8rem', color: 'var(--muted)', minWidth: '80px', textAlign: 'right' }}>{fmtD(m.playedAt)}</div>
                     <div style={{ display: 'flex', gap: '0.3rem' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => openEditMatch(m)} title="Edit">✏️</button>
-                      <button className="btn btn-ghost btn-sm" onClick={() => delMatch(m._id)} title="Delete">🗑</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => setConfirmMatchId(m._id)} title="Delete">🗑</button>
                     </div>
                   </div>
                 );
@@ -337,6 +340,18 @@ export default function AdminPanel() {
             </div>
           )}
         </>
+      )}
+
+      {/* Delete Match Confirm Modal */}
+      {confirmMatchId && (
+        <ConfirmModal
+          title="Delete this match?"
+          message="This will permanently remove the match from the record books. Stats will not auto-update here — refresh the FIFA page."
+          confirmLabel="Yes, Delete"
+          danger
+          onConfirm={() => delMatch(confirmMatchId)}
+          onCancel={() => setConfirmMatchId(null)}
+        />
       )}
     </div>
   );

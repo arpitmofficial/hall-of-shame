@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getMatches, createMatch, updateMatch, getStats, getUsers, deleteMatch } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 
 const fmt = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 const EMPTY_FORM = { player1: '', player2: '', p1g: '', p2g: '', notes: '' };
@@ -19,6 +20,7 @@ export default function FIFA() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState('');
+  const [confirmTarget, setConfirmTarget] = useState(null); // match id awaiting delete confirm
 
   const load = () =>
     Promise.all([getMatches(), getStats(), getUsers()])
@@ -76,15 +78,15 @@ export default function FIFA() {
   };
 
   const del = async (id) => {
-    if (!window.confirm('Delete this match? Stats will update.')) return;
     try {
       await deleteMatch(id);
       setMatches(matches.filter((m) => m._id !== id));
-      // reload stats since they changed
       getStats().then((s) => setStats(s.data.data));
       toast('Match deleted');
     } catch {
       toast('Failed to delete match', 'error');
+    } finally {
+      setConfirmTarget(null);
     }
   };
 
@@ -155,7 +157,7 @@ export default function FIFA() {
                   <div style={{ textAlign: 'right', display: 'flex', gap: '0.4rem', justifyContent: 'flex-end', marginTop: '0.25rem', alignItems: 'center' }}>
                     {m.notes && <span className="match-meta" style={{ maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.notes}</span>}
                     <button className="btn btn-ghost btn-sm" onClick={() => openEdit(m)} title="Edit score">✏️</button>
-                    <button className="btn btn-ghost btn-sm" onClick={() => del(m._id)} title="Delete">🗑</button>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setConfirmTarget(m._id)} title="Delete">🗑</button>
                   </div>
                 </div>
               </div>
@@ -243,6 +245,18 @@ export default function FIFA() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Delete Confirm Modal */}
+      {confirmTarget && (
+        <ConfirmModal
+          title="Delete this match?"
+          message="This will permanently remove the match and update everyone's stats. No going back."
+          confirmLabel="Yes, Delete"
+          danger
+          onConfirm={() => del(confirmTarget)}
+          onCancel={() => setConfirmTarget(null)}
+        />
       )}
     </div>
   );
