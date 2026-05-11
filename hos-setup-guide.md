@@ -158,6 +158,16 @@ hall-of-shame/
 - [x] Global `ToastContext` — success (green) / error (red) / info (purple)
 - [x] Auto-dismiss after 3.5s, slide-in animation, click to dismiss early
 
+### 📱 SMS Notifications (Twilio)
+- [x] **Match Logged Alert**: Sends an SMS to the loser when a FIFA match is logged against them.
+  - *Example:* "🚨 HALL OF SHAME: Arpit just logged a 4-0 FIFA win against you. Log in to check the damage or file a dispute."
+- [x] **New Claim Alert**: Sends an SMS to all Admins when a new pending claim is submitted.
+  - *Example:* "👮 COUNCIL DUTY: Roommate just claimed a '🏋️ Gym Sessions'. Open the Council Panel to approve or reject."
+- [x] **Claim Reviewed Alert**: Sends an SMS to the user when their claim is approved or rejected by an admin.
+  - *Example (Approved):* "✅ CLAIM APPROVED: The Council has verified your '🏋️ Gym Sessions'. You're on the board!"
+  - *Example (Rejected):* "❌ CLAIM REJECTED: Your '🏋️ Gym Sessions' was denied. Reason: 'Pics or it didn't happen'."
+- [x] Fails silently with a mock console log if Twilio keys aren't present in `.env`.
+
 ### 🎨 UI / Design
 - [x] Full dark mode design system
 - [x] `Bebas Neue` + `Inter` (Google Fonts)
@@ -208,6 +218,9 @@ JWT_SECRET=your_production_secret
 JWT_EXPIRE=30d
 NODE_ENV=production
 PORT=5000
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=...
+TWILIO_PHONE_NUMBER=+1234567890
 ```
 
 ### Frontend — Vercel
@@ -276,6 +289,11 @@ MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/hall-of-shame
 JWT_SECRET=anything_strong
 JWT_EXPIRE=30d
 PORT=5000
+
+# Twilio (Required for real SMS, otherwise it mocks to console)
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=...
+TWILIO_PHONE_NUMBER=+1234567890
 ```
 
 ### `frontend/.env.local` (optional for local dev)

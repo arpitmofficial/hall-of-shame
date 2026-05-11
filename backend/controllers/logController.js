@@ -1,5 +1,7 @@
 const Log = require('../models/Log');
 const Competition = require('../models/Competition');
+const User = require('../models/User');
+const { sendSMS } = require('../utils/sms');
 
 // @desc  Get logs (optionally filter by competition)
 // @route GET /api/logs
@@ -37,8 +39,18 @@ const createLog = async (req, res) => {
       status: comp.requiresApproval ? 'pending' : 'approved',
     });
 
-    await log.populate('user', 'name avatar');
+    await log.populate('user', 'name avatar phone');
     await log.populate('competition', 'title emoji');
+
+    // SMS Notification for new pending claim
+    if (log.status === 'pending') {
+      const admins = await User.find({ role: 'admin' });
+      admins.forEach(admin => {
+        if (admin.phone) {
+          sendSMS(admin.phone, `👮 COUNCIL DUTY: ${log.user.name} just claimed a '${comp.emoji} ${comp.title}'. Open the Council Panel to approve or reject.`);
+        }
+      });
+    }
 
     res.status(201).json({ success: true, data: log });
   } catch (error) {
@@ -66,9 +78,18 @@ const reviewLog = async (req, res) => {
       { status, reviewedBy: req.user._id, reviewNote: reviewNote || '' },
       { returnDocument: 'after' }
     )
-      .populate('user', 'name avatar')
+      .populate('user', 'name avatar phone')
       .populate('competition', 'title emoji')
       .populate('reviewedBy', 'name');
+
+    // SMS Notification for review
+    if (updated.user?.phone) {
+      if (status === 'approved') {
+        sendSMS(updated.user.phone, `✅ CLAIM APPROVED: The Council has verified your '${updated.competition.emoji} ${updated.competition.title}'. You're on the board!`);
+      } else {
+        sendSMS(updated.user.phone, `❌ CLAIM REJECTED: Your '${updated.competition.emoji} ${updated.competition.title}' was denied. Reason: '${reviewNote || 'No reason given'}'.`);
+      }
+    }
 
     res.json({ success: true, data: updated });
   } catch (error) {

@@ -1,5 +1,6 @@
 const Match = require('../models/Match');
 const mongoose = require('mongoose');
+const { sendSMS } = require('../utils/sms');
 
 // @desc  Get all matches
 // @route GET /api/matches
@@ -21,8 +22,21 @@ const createMatch = async (req, res) => {
   try {
     const { player1, player2, score, notes, playedAt } = req.body;
     const match = await Match.create({ player1, player2, score, notes, playedAt });
-    await match.populate('player1', 'name avatar');
-    await match.populate('player2', 'name avatar');
+    await match.populate('player1', 'name avatar phone');
+    await match.populate('player2', 'name avatar phone');
+    
+    // SMS Notification for FIFA Match
+    const p1 = match.player1;
+    const p2 = match.player2;
+    const p1w = match.result === 'player1_win';
+    const p2w = match.result === 'player2_win';
+    
+    if (p1w && p2?.phone) {
+      sendSMS(p2.phone, `🚨 HALL OF SHAME: ${p1.name} just logged a ${score.player1Goals}-${score.player2Goals} FIFA win against you. Log in to check the damage or file a dispute.`);
+    } else if (p2w && p1?.phone) {
+      sendSMS(p1.phone, `🚨 HALL OF SHAME: ${p2.name} just logged a ${score.player2Goals}-${score.player1Goals} FIFA win against you. Log in to check the damage or file a dispute.`);
+    }
+
     res.status(201).json({ success: true, data: match });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
