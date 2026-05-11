@@ -62,6 +62,26 @@ const getMe = async (req, res) => {
   res.json({ success: true, data: req.user });
 };
 
+// @desc  Update user profile (name)
+// @route PUT /api/auth/me
+const updateProfile = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+
+    if (name) user.name = name;
+    await user.save();
+
+    res.json({
+      success: true,
+      data: { _id: user._id, name: user.name, phone: user.phone, role: user.role }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 // @desc  Get all users (for player selection in match/competition creation)
 // @route GET /api/auth/users
 const getUsers = async (req, res) => {
@@ -73,4 +93,4 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getMe, getUsers };
+module.exports = { register, login, getMe, getUsers, updateProfile };

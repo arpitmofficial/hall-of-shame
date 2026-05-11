@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import FIFA from './pages/FIFA';
 import Competitions from './pages/Competitions';
 import AdminPanel from './pages/AdminPanel';
+import Profile from './pages/Profile';
 import './index.css';
 
 const Nav = () => {
@@ -28,6 +29,9 @@ const Nav = () => {
             <span>👮 Council</span>
           </NavLink>
         )}
+        <NavLink to="/profile" className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}>
+          <span>👤 Profile</span>
+        </NavLink>
         <button className="btn-logout" onClick={logout}>Logout</button>
       </div>
     </nav>
@@ -56,6 +60,7 @@ function AppInner() {
         <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
         <Route path="/fifa" element={<PrivateRoute><FIFA /></PrivateRoute>} />
         <Route path="/competitions" element={<PrivateRoute><Competitions /></PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
         <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
