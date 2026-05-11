@@ -187,7 +187,9 @@ export default function Competitions() {
           {scoreboard.map((s, i) => (
             <div key={s.userId} className="lb-row">
               <div className={`lb-rank lb-rank-${i + 1}`}>{i + 1}</div>
-              <div className="lb-name">{s.name} {s.userId === user?._id ? <span style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>(you)</span> : ''}</div>
+              <div className="lb-name">
+                {s.name} {i === 0 && <span style={{ marginLeft: '0.2rem' }} title="Current Leader">👑</span>} {s.userId === user?._id ? <span style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>(you)</span> : ''}
+              </div>
               <div style={{ fontWeight: 700, fontSize: '1.3rem', color: i === 0 ? 'var(--gold)' : 'var(--text)' }}>{s.count}</div>
             </div>
           ))}
@@ -303,6 +305,10 @@ export default function Competitions() {
                     <span className="comp-sem">{c.semester || 'No semester'}</span>
                     <span className="comp-inactive">○ Ended</span>
                   </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                    {c.requiresApproval && <span className="pill pill-pending" style={{ fontSize: '0.72rem' }}>Requires Approval</span>}
+                    {!canView && <span className="pill pill-rejected" style={{ fontSize: '0.72rem' }}>Cannot Join Ended</span>}
+                  </div>
                 </div>
               );
             })}
@@ -341,7 +347,15 @@ export default function Competitions() {
                 </div>
               </div>
               <div className="form-group">
-                <label className="form-label">Participants</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <label className="form-label" style={{ marginBottom: 0 }}>Participants</label>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => {
+                    const broIds = users.filter(u => u.role === 'bro').map(u => u._id);
+                    setForm({ ...form, participants: form.participants.length === broIds.length ? [] : broIds });
+                  }}>
+                    {form.participants.length === users.filter(u => u.role === 'bro').length && users.filter(u => u.role === 'bro').length > 0 ? 'Deselect All' : 'Select All'}
+                  </button>
+                </div>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   {users.filter(u => u.role === 'bro').map(u => (
                     <button key={u._id} type="button"
