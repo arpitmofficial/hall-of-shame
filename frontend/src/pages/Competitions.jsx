@@ -44,6 +44,15 @@ export default function Competitions() {
     setLogs(lg.data.data);
   };
 
+  // Auto-refresh scoreboard and logs every 5 seconds when viewing a competition
+  useEffect(() => {
+    if (!selected) return;
+    const interval = setInterval(() => {
+      refreshComp(selected);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [selected]);
+
   const handle = (e) => {
     const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setForm({ ...form, [e.target.name]: val });
