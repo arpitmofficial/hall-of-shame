@@ -4,7 +4,9 @@
 
 A full-stack MERN web app for tracking competitive stats between roommates — FIFA head-to-head scores, custom lifestyle challenges (bath counts, gym sessions, dish duty), and an admin-verified approval system for every claim.
 
-**Live URL:** _coming soon (Vercel + Render)_
+**Live URLs:**
+- **Frontend**: [https://hall-of-shame-nine.vercel.app](https://hall-of-shame-nine.vercel.app)
+- **Backend API**: [https://hall-of-shame-sfy9.onrender.com](https://hall-of-shame-sfy9.onrender.com)
 
 ---
 
