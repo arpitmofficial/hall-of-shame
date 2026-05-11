@@ -19,7 +19,7 @@ const register = async (req, res) => {
 
     const existing = await User.findOne({ phone });
     if (existing) {
-      return res.status(400).json({ success: false, error: 'Phone number already registered' });
+      return res.status(400).json({ success: false, error: 'Bro, this number is already registered. Stop trying to smurf!' });
     }
     const user = await User.create({ name, phone, password, role: role || 'player' });
     res.status(201).json({
@@ -38,8 +38,13 @@ const login = async (req, res) => {
   try {
     const { phone, password } = req.body;
     const user = await User.findOne({ phone });
-    if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ success: false, error: 'Invalid credentials' });
+    
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'New phone who dis? Number not found. Go register first!' });
+    }
+    
+    if (!(await user.matchPassword(password))) {
+      return res.status(401).json({ success: false, error: 'Wrong password! Stop trying to hack your roommate.' });
     }
     res.json({
       success: true,
