@@ -92,7 +92,7 @@ hall-of-shame/
 ## ✅ Fully Implemented Features
 
 ### 🔐 Auth System
-- [x] Register with name, **phone number**, password, role (`player` / `admin`)
+- [x] Register with name, **phone number**, password, role (`bro` / `admin`)
 - [x] Login with **phone number + password** — no email anywhere in the project
 - [x] Phone is the unique identifier — prevents multi-account abuse
 - [x] JWT token stored in `localStorage` as `hos_token`
@@ -106,7 +106,7 @@ hall-of-shame/
 - [x] Log a head-to-head match (Player 1 vs Player 2, goals each side)
 - [x] Auto-calculate result (`player1_win` / `player2_win` / `draw`) via Mongoose pre-save hook
 - [x] **Edit a match** — change score and notes without changing players
-- [x] Delete a match (stats auto-refresh after delete)
+- [x] **Delete a match** (custom styled `ConfirmModal` to prevent accidental deletion, stats auto-refresh)
 - [x] Optional notes field per match (e.g. "Lag doesn't count")
 - [x] Color-coded player names by result (green = winner, red = loser, yellow = draw)
 - [x] **Aggregate Stats** per player: W / D / L / GF / GA / GD / Win%
@@ -124,6 +124,7 @@ hall-of-shame/
 - [x] Claims start as `pending` if approval is required
 - [x] **Log filter tabs** inside competition detail — All / Pending / Approved / Rejected
 - [x] Per-competition **Scoreboard** (only approved entries count, gold/silver/bronze rank)
+- [x] **Real-time Scoreboard** — Auto-refreshes every 5 seconds so users can see admin approvals instantly without reloading
 - [x] Show review note from admin if a claim was rejected
 - [x] **Admin Close/Reopen button** inside competition detail view (admin only)
 - [x] Toast feedback for claim submission
@@ -179,7 +180,6 @@ hall-of-shame/
 
 ## ❌ Still To Do (Backlog)
 
-- [ ] **Real-time claim status** — refresh scoreboard when admin approves without manual reload
 - [ ] **Participant filter** — only show competitions you're added to
 - [ ] **Profile page** — view your own stats, change display name
 - [ ] **Activity feed** on Home — recent events across all features
@@ -310,7 +310,7 @@ VITE_API_URL=http://localhost:5000/api
   name:        String   // required
   phone:       String   // required, unique — login identifier (NO email)
   password:    String   // bcrypt hashed, min 6 chars
-  role:        String   // 'player' | 'admin', default 'player'
+  role:        String   // 'bro' | 'admin', default 'bro'
   avatar:      String   // default ''
   shamePoints: Number   // default 0
 }
