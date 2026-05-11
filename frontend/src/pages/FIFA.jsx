@@ -209,14 +209,14 @@ export default function FIFA() {
                     <label className="form-label">Player 1</label>
                     <select className="form-select" name="player1" value={form.player1} onChange={handle} required>
                       <option value="">Select player</option>
-                      {users.filter(u => u.role === 'player').map(u => <option key={u._id} value={u._id}>{u.name}</option>)}
+                      {users.filter(u => u.role === 'bro').map(u => <option key={u._id} value={u._id}>{u.name}</option>)}
                     </select>
                   </div>
                   <div className="form-group">
                     <label className="form-label">Player 2</label>
                     <select className="form-select" name="player2" value={form.player2} onChange={handle} required>
                       <option value="">Select player</option>
-                      {users.filter(u => u.role === 'player').map(u => <option key={u._id} value={u._id}>{u.name}</option>)}
+                      {users.filter(u => u.role === 'bro').map(u => <option key={u._id} value={u._id}>{u.name}</option>)}
                     </select>
                   </div>
                 </div>

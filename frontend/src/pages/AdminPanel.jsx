@@ -323,15 +323,15 @@ export default function AdminPanel() {
                   <span className="pill pill-pending">Admin</span>
                 </div>
               ))}
-              {/* Players */}
-              {allUsers.filter(u => u.role === 'player').map(u => (
+              {/* Bros */}
+              {allUsers.filter(u => u.role === 'bro').map(u => (
                 <div key={u._id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 1.25rem', background: 'var(--card)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius)' }}>
                   <div style={{ fontSize: '1.5rem' }}>⚽</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600 }}>{u.name}</div>
                     <div style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{u.phone}</div>
                   </div>
-                  <span className="pill pill-approved">Player</span>
+                  <span className="pill pill-approved">Bro</span>
                 </div>
               ))}
             </div>

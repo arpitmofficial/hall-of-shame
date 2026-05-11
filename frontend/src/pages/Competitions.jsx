@@ -306,7 +306,7 @@ export default function Competitions() {
               <div className="form-group">
                 <label className="form-label">Participants</label>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  {users.filter(u => u.role === 'player').map(u => (
+                  {users.filter(u => u.role === 'bro').map(u => (
                     <button key={u._id} type="button"
                       className={`btn btn-sm ${form.participants.includes(u._id) ? 'btn-primary' : 'btn-ghost'}`}
                       onClick={() => toggleParticipant(u._id)}>{u.name}</button>

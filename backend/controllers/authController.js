@@ -21,7 +21,7 @@ const register = async (req, res) => {
     if (existing) {
       return res.status(400).json({ success: false, error: 'Bro, this number is already registered. Stop trying to smurf!' });
     }
-    const user = await User.create({ name, phone, password, role: role || 'player' });
+    const user = await User.create({ name, phone, password, role: role || 'bro' });
     res.status(201).json({
       success: true,
       token: generateToken(user._id),

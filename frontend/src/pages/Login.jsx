@@ -7,7 +7,7 @@ export default function Login() {
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', password: '', role: 'player', adminPasscode: '' });
+  const [form, setForm] = useState({ name: '', phone: '', password: '', role: 'bro', adminPasscode: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -63,7 +63,7 @@ export default function Login() {
             <div className="form-group">
               <label className="form-label">Role</label>
               <select className="form-select" name="role" value={form.role} onChange={handle}>
-                <option value="player">Player (You / Roommate)</option>
+                <option value="bro">Bro (You / Roommate)</option>
                 <option value="admin">Admin (Council of Bros 👮)</option>
               </select>
             </div>
