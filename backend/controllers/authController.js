@@ -8,7 +8,15 @@ const generateToken = (id) =>
 // @route POST /api/auth/register
 const register = async (req, res) => {
   try {
-    const { name, phone, password, role } = req.body;
+    const { name, phone, password, role, adminPasscode } = req.body;
+    
+    // Check passcode if they want to be an admin
+    if (role === 'admin') {
+      if (adminPasscode !== 'cheetah') {
+        return res.status(403).json({ success: false, error: 'Invalid Council Passcode!' });
+      }
+    }
+
     const existing = await User.findOne({ phone });
     if (existing) {
       return res.status(400).json({ success: false, error: 'Phone number already registered' });

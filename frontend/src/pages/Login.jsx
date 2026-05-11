@@ -7,7 +7,7 @@ export default function Login() {
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', password: '', role: 'player' });
+  const [form, setForm] = useState({ name: '', phone: '', password: '', role: 'player', adminPasscode: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -66,6 +66,20 @@ export default function Login() {
                 <option value="player">Player (You / Roommate)</option>
                 <option value="admin">Admin (Council of Bros 👮)</option>
               </select>
+            </div>
+          )}
+          {isRegister && form.role === 'admin' && (
+            <div className="form-group">
+              <label className="form-label" style={{ color: 'var(--primary)' }}>Council Passcode</label>
+              <input 
+                className="form-input" 
+                type="password" 
+                name="adminPasscode" 
+                value={form.adminPasscode} 
+                onChange={handle} 
+                placeholder="Required for admin role" 
+                required 
+              />
             </div>
           )}
           {error && <p className="login-error">{error}</p>}
